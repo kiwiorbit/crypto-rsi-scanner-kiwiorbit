@@ -1,0 +1,5 @@
+{
+  "name": "Crypto RSI Scanner",
+  "description": "Scan and visualize real-time Relative Strength Index (RSI) for hundreds of crypto pairs from Binance. This dashboard offers a customizable grid, multiple timeframes, and advanced charting to help you spot trading opportunities.",
+  "requestFramePermissions": []
+}
