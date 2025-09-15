@@ -278,7 +278,7 @@ const App: React.FC = () => {
         const newNotification = { ...notification, id: Date.now() + Math.random(), read: false };
 
         // Add to persistent list for the panel (newest first)
-        setNotifications(prev => [newNotification, ...prev].slice(0, 25)); // Limit history to 25
+        setNotifications(prev => [newNotification, ...prev].slice(0, 30)); // Limit history to 25
 
         // Add to live toasts for the pop-up (newest first)
         setLiveToasts(prev => [newNotification, ...prev].slice(0, 5)); // Limit on-screen toasts
