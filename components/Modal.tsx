@@ -13,20 +13,31 @@ interface ModalProps {
 
 const BRUSH_SIZE = 3;
 
-// Helper function to get accurate canvas coordinates
-const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement>): { x: number; y: number } => {
+// Helper function to get accurate canvas coordinates from mouse or touch events
+const getEventCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>): { x: number; y: number } | null => {
     const canvas = e.currentTarget;
     const rect = canvas.getBoundingClientRect();
 
+    let clientX, clientY;
+
+    if ('touches' in e) { // Touch event
+        const touch = e.touches[0] || e.changedTouches[0];
+        if (!touch) return null;
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+    } else { // Mouse event
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+
     // Calculate the scale between the canvas's display size (rect.width) and its internal drawing buffer size (canvas.width).
-    // This is necessary because CSS might stretch the canvas, e.g., due to padding on a parent element,
-    // causing a mismatch between mouse coordinates and canvas coordinates.
+    // This is necessary because CSS might stretch the canvas and for HiDPI displays.
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     
     return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top) * scaleY,
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY,
     };
 };
 
@@ -130,14 +141,18 @@ const Modal: React.FC<ModalProps> = ({ symbol, data, onClose, settings, timefram
         redrawCanvas();
     }, [drawings, redrawCanvas]);
 
-    const handleDrawStart = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const handleDrawStart = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         
+        if ('touches' in e) e.preventDefault(); // Prevent scrolling on touch devices
+        
         isDrawingRef.current = true;
-        const { x, y } = getCanvasCoordinates(e);
+        const coords = getEventCoordinates(e);
+        if (!coords) return;
+        const { x, y } = coords;
 
         currentPathRef.current = {
             tool: activeTool,
@@ -151,14 +166,18 @@ const Modal: React.FC<ModalProps> = ({ symbol, data, onClose, settings, timefram
         }
     };
     
-    const handleDrawMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const handleDrawMove = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
         if (!isDrawingRef.current || !currentPathRef.current) return;
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
+
+        if ('touches' in e) e.preventDefault();
         
-        const { x, y } = getCanvasCoordinates(e);
+        const coords = getEventCoordinates(e);
+        if (!coords) return;
+        const { x, y } = coords;
 
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -194,14 +213,15 @@ const Modal: React.FC<ModalProps> = ({ symbol, data, onClose, settings, timefram
         }
     };
 
-    const handleDrawEnd = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const handleDrawEnd = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
         if (!isDrawingRef.current || !currentPathRef.current) return;
         
+        if ('touches' in e) e.preventDefault();
         isDrawingRef.current = false;
-        const { x, y } = getCanvasCoordinates(e);
+        const coords = getEventCoordinates(e);
 
-        if (activeTool === 'trendline') {
-             currentPathRef.current.points.push({ x, y });
+        if (activeTool === 'trendline' && coords) {
+             currentPathRef.current.points.push({ x: coords.x, y: coords.y });
         }
         
         setDrawings(prev => [...prev, currentPathRef.current!]);
@@ -280,6 +300,10 @@ const Modal: React.FC<ModalProps> = ({ symbol, data, onClose, settings, timefram
                         onMouseMove={handleDrawMove}
                         onMouseUp={handleDrawEnd}
                         onMouseLeave={handleDrawEnd}
+                        onTouchStart={handleDrawStart}
+                        onTouchMove={handleDrawMove}
+                        onTouchEnd={handleDrawEnd}
+                        onTouchCancel={handleDrawEnd}
                         style={{ zIndex: 10, cursor: 'crosshair' }}
                     />
                 </div>

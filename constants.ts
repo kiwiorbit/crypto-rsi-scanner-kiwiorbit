@@ -1,3 +1,4 @@
+
 import type { Timeframe, Settings } from './types';
 
 // Original list with duplicates
@@ -119,7 +120,16 @@ const RAW_SYMBOLS: string[] = [
     'AVAXETH',
     'LINKETH',
     'XRPETH',
-    'ONDOUSDT'
+    'DOGEBTC',
+    'ADAETH',
+    'BNBETH',
+    'TRXETH',
+    'TRXXRP',
+    'SUIBTC',
+    'OGUSDT',
+    'ONDOUSDT',
+    'KAITOUSDT',
+    'CRVUSDT'
 ];
 
 
@@ -160,4 +170,35 @@ export const LIGHT_THEME_SETTINGS: Settings = {
     smaColor: '#0077b6',
     rsi50Color: '#b0b8c9',
     lineWidth: 2,
+};
+
+export interface RsiColorInfo {
+    bgColor: string;
+    textColor: string;
+    isExtreme: boolean;
+}
+
+export const getRsiColorInfo = (rsi: number | undefined): RsiColorInfo => {
+    if (rsi === undefined || rsi === null) return { bgColor: 'bg-gray-200 dark:bg-gray-700', textColor: 'text-gray-400', isExtreme: false };
+
+    const whiteText = 'text-white/95';
+    const darkText = 'text-black';
+
+    // Extreme Oversold & Oversold
+    if (rsi < 20) return { bgColor: 'bg-green-900', textColor: whiteText, isExtreme: true };
+    if (rsi < 30) return { bgColor: 'bg-green-700', textColor: whiteText, isExtreme: false };
+    if (rsi < 45) return { bgColor: 'bg-green-500', textColor: darkText, isExtreme: false };
+
+    // Mid-range
+    if (rsi < 50) return { bgColor: 'bg-green-400', textColor: darkText, isExtreme: false };   // 45-49.99
+    if (rsi < 51) return { bgColor: 'bg-purple-400', textColor: darkText, isExtreme: false };    // 50-50.99
+    if (rsi < 55) return { bgColor: 'bg-yellow-400', textColor: darkText, isExtreme: true };  // 51-54.99
+
+    // Overbought
+    if (rsi < 65) return { bgColor: 'bg-amber-600', textColor: whiteText, isExtreme: false };   // 55-64.99
+    if (rsi < 75) return { bgColor: 'bg-rose-500', textColor: whiteText, isExtreme: false };  // 65-74.99
+    if (rsi <= 80) return { bgColor: 'bg-rose-700', textColor: whiteText, isExtreme: false };    // 75-80.00
+
+    // Extreme Overbought (rsi > 80)
+    return { bgColor: 'bg-rose-900', textColor: whiteText, isExtreme: true };
 };

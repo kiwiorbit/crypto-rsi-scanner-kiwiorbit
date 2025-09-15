@@ -1,3 +1,4 @@
+
 export interface Kline {
     openTime: number;
     open: string;
@@ -49,11 +50,13 @@ export interface Drawing {
 }
 
 export type Theme = 'light' | 'dark';
+export type ViewMode = 'chart' | 'heatmap';
 
-export interface Toast {
+export interface Notification {
   id: number;
   symbol: string;
   timeframe: Timeframe;
   rsi: number;
   type: 'overbought' | 'oversold';
+  read: boolean;
 }

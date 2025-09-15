@@ -50,6 +50,15 @@
               'dark-text': '#181c24',
               'medium-text-light': '#5a647e',
             },
+            animation: {
+                'dropdown-in': 'dropdown-fade-in-scale-up 0.2s ease-out',
+            },
+            keyframes: {
+                'dropdown-fade-in-scale-up': {
+                    '0%': { opacity: '0', transform: 'scale(0.95) translateY(-10px)' },
+                    '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+                },
+            }
           },
         },
       }
@@ -297,6 +306,55 @@
         to { transform: translate(40px, -70px) scale(1.3); }
       }
       
+      /* === Interactive Header Gradient === */
+      .interactive-header-container::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit; /* Match parent's border-radius */
+        background: radial-gradient(350px circle at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(41, 255, 184, 0.2), transparent 80%);
+        z-index: 0; /* Position it behind the header content */
+        pointer-events: none; /* Allows clicks to pass through to elements underneath */
+        transition: opacity 0.3s ease-in-out;
+        /* Default state (light theme) is visible */
+        opacity: 1;
+      }
+
+      /* In dark mode, the effect is hidden by default... */
+      .dark .interactive-header-container::before {
+        opacity: 0;
+      }
+
+      /* ...and appears on hover */
+      .dark .interactive-header-container:hover::before {
+        opacity: 1;
+      }
+      
+      /* === Custom Pulse for Extreme Heatmap Cells === */
+      @keyframes pulse-fast {
+        50% {
+          opacity: .8;
+        }
+      }
+      .animate-pulse-fast {
+        animation: pulse-fast 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      /* === Custom Pulse for Notification Dot === */
+      @keyframes pulse-dot {
+        0%, 100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.4);
+          opacity: .7;
+        }
+      }
+      .animate-pulse-dot {
+        animation: pulse-dot 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
       /* === Custom Scrollbar === */
       .custom-scrollbar::-webkit-scrollbar {
         width: 8px;

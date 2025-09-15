@@ -11,6 +11,8 @@ interface SettingsPanelProps {
     onAlertsToggle: () => void;
     cellSize: number;
     onCellSizeChange: (size: number) => void;
+    showColoredBorders: boolean;
+    onColoredBordersToggle: () => void;
 }
 
 const SettingsPanel: React.FC<SettingsPanelProps> = ({
@@ -23,6 +25,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
     onAlertsToggle,
     cellSize,
     onCellSizeChange,
+    showColoredBorders,
+    onColoredBordersToggle,
 }) => {
     
     if (!isOpen) {
@@ -84,6 +88,22 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                     onChange={(e) => onCellSizeChange(Number(e.target.value))}
                                     className="w-full accent-primary-light dark:accent-primary h-2 bg-light-border dark:bg-dark-border rounded-lg outline-none transition"
                                 />
+                            </li>
+                            <li className="p-3 rounded-lg bg-light-bg/80 dark:bg-dark-bg/80 flex items-center justify-between">
+                                <label htmlFor="colored-borders-toggle" className="font-semibold cursor-pointer pr-4 text-dark-text dark:text-light-text flex-grow">
+                                    Colored Cell Borders
+                                    <span className="block text-xs font-normal text-medium-text-light dark:text-medium-text">Apply heatmap colors to chart view borders.</span>
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="checkbox"
+                                        id="colored-borders-toggle"
+                                        className="sr-only peer"
+                                        checked={showColoredBorders}
+                                        onChange={onColoredBordersToggle}
+                                    />
+                                    <div className="w-11 h-6 bg-light-border peer-focus:outline-none rounded-full peer dark:bg-dark-border peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-dark-card after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-light dark:peer-checked:bg-primary"></div>
+                                </div>
                             </li>
                         </ul>
                     </div>

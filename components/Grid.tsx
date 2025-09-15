@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, memo } from 'react';
 import GridCell from './GridCell';
 import GridCellSkeleton from './GridCellSkeleton';
@@ -12,9 +13,10 @@ interface GridProps {
     favorites: string[];
     onToggleFavorite: (symbol: string) => void;
     loading: boolean;
+    showColoredBorders: boolean;
 }
 
-const Grid: React.FC<GridProps> = ({ symbols, symbolsData, onSelectSymbol, cellSize, settings, favorites, onToggleFavorite, loading }) => {
+const Grid: React.FC<GridProps> = ({ symbols, symbolsData, onSelectSymbol, cellSize, settings, favorites, onToggleFavorite, loading, showColoredBorders }) => {
     const [columns, setColumns] = useState(6);
 
     useEffect(() => {
@@ -58,6 +60,7 @@ const Grid: React.FC<GridProps> = ({ symbols, symbolsData, onSelectSymbol, cellS
                             settings={settings}
                             isFavorite={favorites.includes(symbol)}
                             onToggleFavorite={onToggleFavorite}
+                            showColoredBorders={showColoredBorders}
                         />
                     );
                 })

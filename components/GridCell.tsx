@@ -1,7 +1,8 @@
 
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import { LineChart, Line, ResponsiveContainer, ReferenceLine, YAxis } from 'recharts';
 import type { SymbolData, Settings } from '../types';
+import { getRsiColorInfo } from '../constants';
 
 interface GridCellProps {
     symbol: string;
@@ -11,11 +12,20 @@ interface GridCellProps {
     settings: Settings;
     isFavorite: boolean;
     onToggleFavorite: (symbol: string) => void;
+    showColoredBorders: boolean;
 }
 
-const GridCell: React.FC<GridCellProps> = ({ symbol, data, onSelect, size, settings, isFavorite, onToggleFavorite }) => {
+const GridCell: React.FC<GridCellProps> = ({ symbol, data, onSelect, size, settings, isFavorite, onToggleFavorite, showColoredBorders }) => {
     const [isHovered, setIsHovered] = useState(false);
     const lastRsi = data?.rsi?.[data.rsi.length - 1]?.value;
+
+    const borderColorClass = useMemo(() => {
+        if (!showColoredBorders || lastRsi === undefined || lastRsi === null) {
+            return 'border-light-border dark:border-dark-border';
+        }
+        const { bgColor } = getRsiColorInfo(lastRsi);
+        return bgColor.split(' ')[0].replace('bg-', 'border-');
+    }, [showColoredBorders, lastRsi]);
 
     const getRsiColor = (rsi: number) => {
         if (rsi > 70) return 'text-red-400';
@@ -42,7 +52,7 @@ const GridCell: React.FC<GridCellProps> = ({ symbol, data, onSelect, size, setti
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleSelect}
         >
-            <div className="absolute inset-0 bg-light-card dark:bg-dark-card rounded-xl group-hover:shadow-lg group-hover:border-primary group-hover:-translate-y-0.5 group-hover:scale-[1.02] transition-all duration-200 ease-in-out border border-light-border dark:border-dark-border"></div>
+            <div className={`absolute inset-0 bg-light-card dark:bg-dark-card rounded-xl group-hover:shadow-lg group-hover:border-primary group-hover:-translate-y-0.5 group-hover:scale-[1.02] transition-all duration-200 ease-in-out border ${borderColorClass}`}></div>
             
              <button
                 onClick={handleToggleFavoriteClick}
