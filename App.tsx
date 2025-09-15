@@ -129,7 +129,6 @@ const App: React.FC = () => {
     const [theme, setTheme] = useState<Theme>('dark');
     const [settings, setSettings] = useState<Settings>(DARK_THEME_SETTINGS);
     const [timeframe, setTimeframe] = useState<Timeframe>('15m');
-    const [cellSize, setCellSize] = useState<number>(120);
     const [symbolsData, setSymbolsData] = useState<Record<string, SymbolData>>({});
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -278,7 +277,7 @@ const App: React.FC = () => {
         const newNotification = { ...notification, id: Date.now() + Math.random(), read: false };
 
         // Add to persistent list for the panel (newest first)
-        setNotifications(prev => [newNotification, ...prev].slice(0, 30)); // Limit history to 25
+        setNotifications(prev => [newNotification, ...prev].slice(0, 25)); // Limit history to 25
 
         // Add to live toasts for the pop-up (newest first)
         setLiveToasts(prev => [newNotification, ...prev].slice(0, 5)); // Limit on-screen toasts
@@ -368,10 +367,6 @@ const App: React.FC = () => {
         setUserSymbols(data.selectedSymbols);
         setFavorites(prev => prev.filter(fav => data.allSymbols.includes(fav)));
         setIsAssetModalOpen(false);
-    }, []);
-
-    const handleCellSizeChange = useCallback((newSize: number) => {
-        setCellSize(newSize);
     }, []);
 
     const handleSelectSymbol = useCallback((symbol: string) => {
@@ -518,7 +513,6 @@ const App: React.FC = () => {
                             symbols={displayedSymbols}
                             symbolsData={symbolsData}
                             onSelectSymbol={handleSelectSymbol}
-                            cellSize={cellSize}
                             settings={settings}
                             favorites={favorites}
                             onToggleFavorite={toggleFavorite}
@@ -553,8 +547,6 @@ const App: React.FC = () => {
                 areAlertsEnabled={areAlertsEnabled}
                 onAlertsToggle={handleAlertsToggle}
                 onReset={handleResetSettings}
-                cellSize={cellSize}
-                onCellSizeChange={handleCellSizeChange}
                 showColoredBorders={showColoredBorders}
                 onColoredBordersToggle={handleColoredBordersToggle}
             />

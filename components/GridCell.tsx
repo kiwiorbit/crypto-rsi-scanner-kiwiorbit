@@ -8,14 +8,13 @@ interface GridCellProps {
     symbol: string;
     data: SymbolData;
     onSelect: (symbol: string) => void;
-    size: number;
     settings: Settings;
     isFavorite: boolean;
     onToggleFavorite: (symbol: string) => void;
     showColoredBorders: boolean;
 }
 
-const GridCell: React.FC<GridCellProps> = ({ symbol, data, onSelect, size, settings, isFavorite, onToggleFavorite, showColoredBorders }) => {
+const GridCell: React.FC<GridCellProps> = ({ symbol, data, onSelect, settings, isFavorite, onToggleFavorite, showColoredBorders }) => {
     const [isHovered, setIsHovered] = useState(false);
     const lastRsi = data?.rsi?.[data.rsi.length - 1]?.value;
 
@@ -46,8 +45,7 @@ const GridCell: React.FC<GridCellProps> = ({ symbol, data, onSelect, size, setti
 
     return (
         <div
-            className="group relative flex flex-col items-center justify-center p-2 rounded-xl shadow-lg cursor-pointer transition-all duration-200 ease-in-out"
-            style={{ height: `${size}px` }}
+            className="group relative flex flex-col items-center justify-center p-2 rounded-xl shadow-lg cursor-pointer transition-all duration-200 ease-in-out h-40"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleSelect}

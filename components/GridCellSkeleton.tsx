@@ -1,16 +1,15 @@
+
 import React from 'react';
 
 interface GridCellSkeletonProps {
-    size: number;
     animationDelay: string;
 }
 
-const GridCellSkeleton: React.FC<GridCellSkeletonProps> = ({ size, animationDelay }) => {
+const GridCellSkeleton: React.FC<GridCellSkeletonProps> = ({ animationDelay }) => {
     return (
         <div
-            className="relative p-2 rounded-xl bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border overflow-hidden"
+            className="relative p-2 rounded-xl bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border overflow-hidden h-40"
             style={{ 
-                height: `${size}px`,
                 animation: 'skeleton-fade-in 0.5s ease-out forwards',
                 animationDelay,
                 opacity: 0, // Start hidden for animation

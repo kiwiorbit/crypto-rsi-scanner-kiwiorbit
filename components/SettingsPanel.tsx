@@ -9,8 +9,6 @@ interface SettingsPanelProps {
     onReset: () => void;
     areAlertsEnabled: boolean;
     onAlertsToggle: () => void;
-    cellSize: number;
-    onCellSizeChange: (size: number) => void;
     showColoredBorders: boolean;
     onColoredBordersToggle: () => void;
 }
@@ -23,8 +21,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
     onReset,
     areAlertsEnabled,
     onAlertsToggle,
-    cellSize,
-    onCellSizeChange,
     showColoredBorders,
     onColoredBordersToggle,
 }) => {
@@ -76,18 +72,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                     <i className="fa-solid fa-palette w-5 text-center text-lg text-primary-light dark:text-primary"></i>
                                     <span className="font-semibold">Theme & Appearance</span>
                                 </button>
-                            </li>
-                             <li className="p-3 rounded-lg bg-light-bg/80 dark:bg-dark-bg/80">
-                                <label htmlFor="cellSizeSlider" className="block mb-2 font-semibold text-dark-text dark:text-light-text">Grid Cell Size: <span className="font-mono text-primary-light dark:text-primary">{cellSize}px</span></label>
-                                <input
-                                    type="range"
-                                    id="cellSizeSlider"
-                                    min="80"
-                                    max="250"
-                                    value={cellSize}
-                                    onChange={(e) => onCellSizeChange(Number(e.target.value))}
-                                    className="w-full accent-primary-light dark:accent-primary h-2 bg-light-border dark:bg-dark-border rounded-lg outline-none transition"
-                                />
                             </li>
                             <li className="p-3 rounded-lg bg-light-bg/80 dark:bg-dark-bg/80 flex items-center justify-between">
                                 <label htmlFor="colored-borders-toggle" className="font-semibold cursor-pointer pr-4 text-dark-text dark:text-light-text flex-grow">

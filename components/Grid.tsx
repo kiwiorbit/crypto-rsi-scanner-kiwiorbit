@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import GridCell from './GridCell';
 import GridCellSkeleton from './GridCellSkeleton';
 import type { SymbolData, Settings } from '../types';
@@ -8,7 +8,6 @@ interface GridProps {
     symbols: string[];
     symbolsData: Record<string, SymbolData>;
     onSelectSymbol: (symbol: string) => void;
-    cellSize: number;
     settings: Settings;
     favorites: string[];
     onToggleFavorite: (symbol: string) => void;
@@ -16,26 +15,11 @@ interface GridProps {
     showColoredBorders: boolean;
 }
 
-const Grid: React.FC<GridProps> = ({ symbols, symbolsData, onSelectSymbol, cellSize, settings, favorites, onToggleFavorite, loading, showColoredBorders }) => {
-    const [columns, setColumns] = useState(6);
-
-    useEffect(() => {
-        const calculateColumns = () => {
-            const containerWidth = window.innerWidth - 40; // Approx container width
-            const cellWidth = cellSize * 1.5 + 12; // cell width + gap
-            const newColumns = Math.max(2, Math.floor(containerWidth / cellWidth));
-            setColumns(newColumns);
-        };
-        
-        calculateColumns();
-        window.addEventListener('resize', calculateColumns);
-        return () => window.removeEventListener('resize', calculateColumns);
-    }, [cellSize]);
+const Grid: React.FC<GridProps> = ({ symbols, symbolsData, onSelectSymbol, settings, favorites, onToggleFavorite, loading, showColoredBorders }) => {
     
     return (
         <div
-            className="grid gap-3"
-            style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"
             role="grid"
             aria-label="Cryptocurrency RSI data grid"
         >
@@ -43,7 +27,6 @@ const Grid: React.FC<GridProps> = ({ symbols, symbolsData, onSelectSymbol, cellS
                  symbols.map((symbol, index) => (
                     <GridCellSkeleton 
                         key={symbol} 
-                        size={cellSize} 
                         animationDelay={`${index * 0.03}s`} 
                     />
                 ))
@@ -56,7 +39,6 @@ const Grid: React.FC<GridProps> = ({ symbols, symbolsData, onSelectSymbol, cellS
                             symbol={symbol}
                             data={data}
                             onSelect={onSelectSymbol}
-                            size={cellSize}
                             settings={settings}
                             isFavorite={favorites.includes(symbol)}
                             onToggleFavorite={onToggleFavorite}
